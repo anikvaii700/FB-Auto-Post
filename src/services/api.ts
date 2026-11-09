@@ -186,4 +186,94 @@ export const api = {
     const res = await fetch('/api/supabase/schema');
     return res.json();
   },
+
+  async generateImageCaption(params: {
+    imagePrompt?: string;
+    imageBase64?: string;
+    mimeType?: string;
+    theme?: string;
+    preferredTone?: string;
+    customHint?: string;
+  }): Promise<{ success: boolean; title: string; caption: string; hashtags: string[]; error?: string }> {
+    const res = await fetch('/api/ai/image-caption', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(params),
+    });
+    return res.json();
+  },
+
+  async createBatchImagePosts(params: {
+    items: Array<{
+      imageUrl: string;
+      title?: string;
+      caption?: string;
+      hashtags?: string[];
+      scheduledAt?: string;
+      categoryName?: string;
+    }>;
+    scheduleIntervalHours?: number;
+    startDelayMinutes?: number;
+  }): Promise<{ success: boolean; count: number; posts: PostItem[]; error?: string }> {
+    const res = await fetch('/api/ai/batch-image-posts', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(params),
+    });
+    return res.json();
+  },
+
+  async getComments(): Promise<{
+    success: boolean;
+    comments: import('../types.ts').FacebookCommentItem[];
+    isBotActive: boolean;
+    botTone: string;
+    error?: string;
+  }> {
+    const res = await fetch('/api/comments');
+    return res.json();
+  },
+
+  async testCommentReply(params: {
+    commentText: string;
+    commenterName?: string;
+    tone?: string;
+    postTitle?: string;
+  }): Promise<{
+    success: boolean;
+    replyText: string;
+    category: string;
+    confidence: number;
+    error?: string;
+  }> {
+    const res = await fetch('/api/comments/test-reply', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(params),
+    });
+    return res.json();
+  },
+
+  async replyComment(commentId: string, message: string): Promise<{
+    success: boolean;
+    replyId?: string;
+    repliedMessage?: string;
+    error?: string;
+  }> {
+    const res = await fetch('/api/comments/reply', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ commentId, message }),
+    });
+    return res.json();
+  },
+
+  async toggleCommentBot(isActive: boolean, tone?: string): Promise<{ success: boolean; settings: AdminSettings }> {
+    const res = await fetch('/api/comments/toggle-bot', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ isActive, tone }),
+    });
+    return res.json();
+  },
 };

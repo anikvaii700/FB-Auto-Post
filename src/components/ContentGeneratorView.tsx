@@ -13,6 +13,8 @@ import {
 } from 'lucide-react';
 import { Category, LibraryImage, PostItem } from '../types.ts';
 import { api } from '../services/api.ts';
+import { VisualCardModal } from './VisualCardModal.tsx';
+import { applyStylePreset } from '../utils/textFormatter.ts';
 
 interface Props {
   categories: Category[];
@@ -41,6 +43,7 @@ export const ContentGeneratorView: React.FC<Props> = ({
   const [editMode, setEditMode] = useState(false);
   const [feedback, setFeedback] = useState('');
   const [regenerating, setRegenerating] = useState(false);
+  const [cardModalOpen, setCardModalOpen] = useState(false);
 
   const selectedCategory = categories.find((c) => c.id === selectedCatId);
 
@@ -284,7 +287,7 @@ export const ContentGeneratorView: React.FC<Props> = ({
           <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-xs min-h-[460px] flex flex-col justify-between">
             {generatedPost ? (
               <div className="space-y-4">
-                <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
+                <div className="flex flex-wrap items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800 gap-2">
                   <div className="flex items-center gap-2">
                     <CheckCircle2 className="w-5 h-5 text-emerald-500" />
                     <h2 className="text-sm font-bold text-slate-900 dark:text-white">
@@ -292,6 +295,14 @@ export const ContentGeneratorView: React.FC<Props> = ({
                     </h2>
                   </div>
                   <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setCardModalOpen(true)}
+                      className="px-2.5 py-1 text-xs font-semibold rounded-lg bg-gradient-to-r from-amber-500 to-rose-500 text-white hover:from-amber-600 hover:to-rose-600 flex items-center gap-1 cursor-pointer shadow-xs"
+                    >
+                      <Sparkles className="w-3.5 h-3.5 text-amber-200" />
+                      <span>{lang === 'bn' ? '🎨 ভিজ্যুয়াল কার্ড' : 'Visual Card'}</span>
+                    </button>
                     <button
                       onClick={() => setEditMode(!editMode)}
                       className="px-2.5 py-1 text-xs font-semibold rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 flex items-center gap-1 cursor-pointer"
@@ -334,6 +345,57 @@ export const ContentGeneratorView: React.FC<Props> = ({
                         className="w-full p-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-xs font-bold"
                         placeholder="Title"
                       />
+                      <div className="flex flex-wrap items-center gap-1 py-1">
+                        <span className="text-[10px] text-slate-400 font-medium mr-1">স্টাইল যোগ করুন:</span>
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setGeneratedPost({
+                              ...generatedPost,
+                              body: applyStylePreset(generatedPost.body, 'islamic_frame'),
+                            })
+                          }
+                          className="px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 text-[10px] font-semibold cursor-pointer"
+                        >
+                          🕌 ইসলামিক
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setGeneratedPost({
+                              ...generatedPost,
+                              body: applyStylePreset(generatedPost.body, 'motivational_frame'),
+                            })
+                          }
+                          className="px-2 py-0.5 rounded bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 text-[10px] font-semibold cursor-pointer"
+                        >
+                          🌟 মোটিভেশনাল
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setGeneratedPost({
+                              ...generatedPost,
+                              body: applyStylePreset(generatedPost.body, 'bold_english'),
+                            })
+                          }
+                          className="px-2 py-0.5 rounded bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20 text-[10px] font-semibold cursor-pointer"
+                        >
+                          𝗕 বোল্ড ইংলিশ
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setGeneratedPost({
+                              ...generatedPost,
+                              body: applyStylePreset(generatedPost.body, 'quote_marks'),
+                            })
+                          }
+                          className="px-2 py-0.5 rounded bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/20 text-[10px] font-semibold cursor-pointer"
+                        >
+                          ❝ কোট ❞
+                        </button>
+                      </div>
                       <textarea
                         rows={6}
                         value={generatedPost.body}
@@ -447,6 +509,23 @@ export const ContentGeneratorView: React.FC<Props> = ({
           </div>
         </div>
       </div>
+      {/* Visual Card Generator Modal */}
+      {generatedPost && (
+        <VisualCardModal
+          isOpen={cardModalOpen}
+          onClose={() => setCardModalOpen(false)}
+          initialTitle={generatedPost.title || ''}
+          initialBody={generatedPost.body || ''}
+          categoryName={generatedPost.categoryName || 'The Mosafa'}
+          lang={lang}
+          onAttachImage={(dataUrl) => {
+            const updated = { ...generatedPost, imageUrl: dataUrl, imageSource: 'ai' as const };
+            setGeneratedPost(updated);
+            onPostCreated(updated);
+            setCardModalOpen(false);
+          }}
+        />
+      )}
     </div>
   );
 };

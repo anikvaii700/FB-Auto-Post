@@ -10,10 +10,10 @@
     "metaAppId": "",
     "metaAppSecret": "",
     "metaUserToken": "",
-    "metaPageToken": "",
-    "metaPageId": "",
-    "metaPageName": "MoSaFa Official Page (Demo / Connect to Live)",
-    "isMetaConnected": false,
+    "metaPageToken": "EAAa0IZCpAJ5EBS1B4wdnZAoT0s3IbSQCmIG4XjbJBvYzgnLDvUzBAmVH23eWK8ftjU1rnqzZCZAID3tyDg16iMGWpoJsb01Jrj1Izq17dmatEvZAuKPhzEjpqMigFhowmbq6bTc1ZCny03JA4EU3zHsfuCMOXfcF2JZC98EHo2y44YZArCQ0tkmwVmC24QwQxQZA6aoYAJATqPAwH3N8XqrFLxSTW39odr3lVB8SY2CUXZAh2LMKZAXqdINv0nsqv2SUA8BsqX33JvQ3d66DqAOlZBp0ANiH4x1ZAgpsk06dyZCAZDZD",
+    "metaPageId": "1475947198932278",
+    "metaPageName": "The Mosafa",
+    "isMetaConnected": true,
     "supabaseUrl": "",
     "supabaseAnonKey": "",
     "isSupabaseConfigured": false,
@@ -402,12 +402,12 @@
       "language": "bn",
       "status": "scheduled",
       "approvalMode": "auto",
-      "scheduledAt": "2026-11-09T14:53:33.835Z",
+      "scheduledAt": "2026-11-09T15:32:52.497Z",
       "imageUrl": "/src/assets/images/social_islamic_bg_1794224545916.jpg",
       "imageSource": "ai",
       "retryCount": 0,
       "createdAt": "2026-11-09T11:53:33.835Z",
-      "updatedAt": "2026-11-09T11:53:33.835Z"
+      "updatedAt": "2026-11-09T15:27:52.498Z"
     },
     {
       "id": "post_demo_3",
@@ -449,14 +449,17 @@
       "categoryId": "cat_motivational",
       "categoryName": "Motivational Posts",
       "language": "bn",
-      "status": "draft",
+      "status": "published",
       "approvalMode": "manual",
       "scheduledAt": "2026-11-09T17:53:33.835Z",
       "imageUrl": "/src/assets/images/social_nature_bg_1794224545379.jpg",
       "imageSource": "ai",
       "retryCount": 0,
       "createdAt": "2026-11-09T11:53:33.835Z",
-      "updatedAt": "2026-11-09T11:53:33.835Z"
+      "updatedAt": "2026-11-09T15:28:48.603Z",
+      "publishedAt": "2026-11-09T15:28:48.603Z",
+      "facebookPostId": "122126285985481713",
+      "facebookPermalink": "https://www.facebook.com/122126285985481713"
     }
   ],
   "commands": [
@@ -533,6 +536,91 @@
     }
   ],
   "logs": [
+    {
+      "id": "log_1794238128603_g2fa3",
+      "timestamp": "2026-11-09T15:28:48.603Z",
+      "level": "success",
+      "module": "facebook",
+      "message": "Post published manually to The Mosafa (Live Facebook Page)",
+      "details": "https://www.facebook.com/122126285985481713"
+    },
+    {
+      "id": "log_1794238112186_7a256",
+      "timestamp": "2026-11-09T15:28:32.186Z",
+      "level": "info",
+      "module": "scheduler",
+      "message": "Background publishing scheduler started. Checking queue every 25 seconds."
+    },
+    {
+      "id": "log_1794238072497_qrcbu",
+      "timestamp": "2026-11-09T15:27:52.497Z",
+      "level": "warn",
+      "module": "scheduler",
+      "message": "Post retry #2 scheduled for \"সবর ও প্রার্থনার শক্তি\": Meta Photo Upload Error [200]: (#200) The permission(s) publish_actions are not available. It has been deprecated. If you want to provide a way for your app users to share content to Facebook, we encourage you to use our Sharing products instead."
+    },
+    {
+      "id": "log_1794238071463_bqtny",
+      "timestamp": "2026-11-09T15:27:51.463Z",
+      "level": "info",
+      "module": "scheduler",
+      "message": "Processing scheduled post \"সবর ও প্রার্থনার শক্তি\"..."
+    },
+    {
+      "id": "log_1794237750970_lnzwo",
+      "timestamp": "2026-11-09T15:22:30.970Z",
+      "level": "warn",
+      "module": "scheduler",
+      "message": "Post retry #1 scheduled for \"সবর ও প্রার্থনার শক্তি\": Meta Photo Upload Error [200]: (#200) The permission(s) publish_actions are not available. It has been deprecated. If you want to provide a way for your app users to share content to Facebook, we encourage you to use our Sharing products instead."
+    },
+    {
+      "id": "log_1794237749458_p46ll",
+      "timestamp": "2026-11-09T15:22:29.458Z",
+      "level": "info",
+      "module": "scheduler",
+      "message": "Processing scheduled post \"সবর ও প্রার্থনার শক্তি\"..."
+    },
+    {
+      "id": "log_1794237747873_i05bu",
+      "timestamp": "2026-11-09T15:22:27.873Z",
+      "level": "info",
+      "module": "system",
+      "message": "Admin settings updated successfully."
+    },
+    {
+      "id": "log_1794237746455_nkv2e",
+      "timestamp": "2026-11-09T15:22:26.455Z",
+      "level": "info",
+      "module": "scheduler",
+      "message": "Background publishing scheduler started. Checking queue every 25 seconds."
+    },
+    {
+      "id": "log_1794233406177_70u32",
+      "timestamp": "2026-11-09T14:10:06.177Z",
+      "level": "info",
+      "module": "system",
+      "message": "Admin settings updated successfully."
+    },
+    {
+      "id": "log_1794233355200_cxj1y",
+      "timestamp": "2026-11-09T14:09:15.200Z",
+      "level": "info",
+      "module": "scheduler",
+      "message": "Background publishing scheduler started. Checking queue every 25 seconds."
+    },
+    {
+      "id": "log_1794232480965_am3b0",
+      "timestamp": "2026-11-09T13:54:40.965Z",
+      "level": "warn",
+      "module": "facebook",
+      "message": "Facebook connection test failed: The access token could not be decrypted"
+    },
+    {
+      "id": "log_1794232441049_1vw7b",
+      "timestamp": "2026-11-09T13:54:01.049Z",
+      "level": "info",
+      "module": "scheduler",
+      "message": "Background publishing scheduler started. Checking queue every 25 seconds."
+    },
     {
       "id": "log_1794225537768_r3kib",
       "timestamp": "2026-11-09T11:58:57.768Z",

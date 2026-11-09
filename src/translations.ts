@@ -9,6 +9,8 @@ export type TranslationKey =
   | 'contentCalendar'
   | 'publishedHistory'
   | 'facebookConnection'
+  | 'batchPhotoPoster'
+  | 'commentBot'
   | 'settings'
   | 'automationActive'
   | 'automationPaused'
@@ -51,6 +53,8 @@ export const translations = {
     contentCalendar: 'Content Calendar',
     publishedHistory: 'Published History',
     facebookConnection: 'Facebook Connection',
+    batchPhotoPoster: 'Batch Photo Poster',
+    commentBot: 'Auto Comment Reply',
     settings: 'Settings',
     automationActive: 'Automation Running',
     automationPaused: 'Automation Paused',
@@ -88,6 +92,8 @@ export const translations = {
     contentGenerator: 'কন্টেন্ট জেনারেটর',
     categories: 'ক্যাটাগরি সমূহ',
     imageLibrary: 'ইমেজ লাইব্রেরি',
+    batchPhotoPoster: 'ছবি থেকে অটো-পোস্টার',
+    commentBot: 'কমেন্ট অটো-রিপ্লাই বট',
     publishingQueue: 'পোস্টিং কিউ (Queue)',
     contentCalendar: 'কন্টেন্ট ক্যালেন্ডার',
     publishedHistory: 'প্রকাশিত পোস্টের হিস্ট্রি',

@@ -175,6 +175,78 @@ export const DashboardView: React.FC<Props> = ({
         </div>
       )}
 
+      {/* User 3 Core Tasks Guided Navigation Card */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {/* Task 1: Batch Photo Poster */}
+        <div
+          onClick={() => onNavigate('batchPhotoPoster')}
+          className="group p-4 rounded-2xl bg-gradient-to-br from-cyan-500/10 via-teal-500/5 to-transparent border border-cyan-500/30 dark:border-cyan-500/20 hover:border-cyan-500 cursor-pointer transition-all shadow-xs"
+        >
+          <div className="flex items-center justify-between mb-2">
+            <span className="w-8 h-8 rounded-xl bg-cyan-500/20 text-cyan-600 dark:text-cyan-400 flex items-center justify-center font-bold text-sm">
+              ১
+            </span>
+            <span className="text-[10px] font-bold text-cyan-600 dark:text-cyan-400 bg-cyan-500/15 px-2 py-0.5 rounded-full flex items-center gap-1">
+              ছবি ও ক্যাপশন <ArrowRight className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
+            </span>
+          </div>
+          <h3 className="font-bold text-sm text-slate-900 dark:text-white group-hover:text-cyan-600 dark:group-hover:text-cyan-400 transition-colors">
+            {lang === 'bn' ? 'ছবি দিয়ে ক্যাপশন ও শিডিউল' : 'Batch Photo Caption & Schedule'}
+          </h3>
+          <p className="text-xs text-slate-500 mt-1 leading-relaxed">
+            {lang === 'bn'
+              ? '১০-২০টি ছবি একসাথে দিন। AI মিলিয়ে ছোট ক্যাপশন লিখবে এবং আপনার দেওয়া টাইমে স্বয়ংক্রিয় পোস্ট করবে।'
+              : 'Upload multiple photos. AI writes matching captions and auto-publishes on your schedule.'}
+          </p>
+        </div>
+
+        {/* Task 2: AI Command Center */}
+        <div
+          onClick={() => onNavigate('commandCenter')}
+          className="group p-4 rounded-2xl bg-gradient-to-br from-emerald-500/10 via-teal-500/5 to-transparent border border-emerald-500/30 dark:border-emerald-500/20 hover:border-emerald-500 cursor-pointer transition-all shadow-xs"
+        >
+          <div className="flex items-center justify-between mb-2">
+            <span className="w-8 h-8 rounded-xl bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 flex items-center justify-center font-bold text-sm">
+              ২
+            </span>
+            <span className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/15 px-2 py-0.5 rounded-full flex items-center gap-1">
+              নির্দেশনা দিয়ে স্ট্যাটাস <ArrowRight className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
+            </span>
+          </div>
+          <h3 className="font-bold text-sm text-slate-900 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
+            {lang === 'bn' ? 'এআই কমান্ড সেন্টার' : 'AI Command Center'}
+          </h3>
+          <p className="text-xs text-slate-500 mt-1 leading-relaxed">
+            {lang === 'bn'
+              ? 'আপনি যে নির্দেশনা দেবেন (যেমন: সবর নিয়ে ৩টি স্ট্যাটাস লিখো), AI সাথে সাথে সেই অনুযায়ী নিখুঁত স্ট্যাটাস বানাবে।'
+              : 'Give custom instructions in Bengali or English; AI generates tailored structured statuses.'}
+          </p>
+        </div>
+
+        {/* Task 3: Smart Comment Auto-Reply */}
+        <div
+          onClick={() => onNavigate('commentBot')}
+          className="group p-4 rounded-2xl bg-gradient-to-br from-purple-500/10 via-indigo-500/5 to-transparent border border-purple-500/30 dark:border-purple-500/20 hover:border-purple-500 cursor-pointer transition-all shadow-xs"
+        >
+          <div className="flex items-center justify-between mb-2">
+            <span className="w-8 h-8 rounded-xl bg-purple-500/20 text-purple-600 dark:text-purple-400 flex items-center justify-center font-bold text-sm">
+              ৩
+            </span>
+            <span className="text-[10px] font-bold text-purple-600 dark:text-purple-400 bg-purple-500/15 px-2 py-0.5 rounded-full flex items-center gap-1">
+              স্বয়ংক্রিয় রিপ্লে <ArrowRight className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
+            </span>
+          </div>
+          <h3 className="font-bold text-sm text-slate-900 dark:text-white group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">
+            {lang === 'bn' ? 'কমেন্ট অটো-রিপ্লাই ইঞ্জিন' : 'AI Comment Auto-Reply Bot'}
+          </h3>
+          <p className="text-xs text-slate-500 mt-1 leading-relaxed">
+            {lang === 'bn'
+              ? 'সালাম, মাশাআল্লাহ, দোয়া বা প্রশ্নের ধরন বুঝে মিষ্টি ও মার্জিত বাংলায় সাথে সাথে কমেন্টের রিপ্লে দিবে।'
+              : 'Detects intent (salams, duas, praises, questions) and sends context-aware replies.'}
+          </p>
+        </div>
+      </div>
+
       {/* 2. Key Metrics Strip (Tabular Figures) */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
         {/* Total Generated */}

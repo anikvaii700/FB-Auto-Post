@@ -1,6 +1,6 @@
 import { db } from './db.ts';
-import { publishPostToFacebook } from './facebook.ts';
-import { generatePostsWithAI } from './gemini.ts';
+import { publishPostToFacebook, fetchFacebookPostComments, replyToFacebookComment } from './facebook.ts';
+import { generatePostsWithAI, generateSmartCommentReply } from './gemini.ts';
 
 let schedulerInterval: NodeJS.Timeout | null = null;
 let isProcessing = false;
@@ -60,6 +60,7 @@ async function runSchedulerTick() {
         post,
         pageToken: settings.metaPageToken,
         pageId: settings.metaPageId,
+        pageName: settings.metaPageName || 'The Mosafa',
       });
 
       if (result.success) {
@@ -102,6 +103,11 @@ async function runSchedulerTick() {
 
     // 2. Auto-generate ahead of time if queue is low
     await checkAndAutoAdvanceQueue(settings);
+
+    // 3. Process new Facebook comments auto-reply if enabled
+    if (settings.isAutoCommentReplyActive && settings.isMetaConnected && settings.metaPageToken) {
+      await processAutoCommentReplies(settings);
+    }
   } catch (err: any) {
     console.error('[MoSaFa Scheduler] Error in tick:', err);
     db.addLog('error', 'scheduler', `Scheduler tick error: ${err.message}`);
@@ -193,5 +199,55 @@ async function checkAndAutoAdvanceQueue(settings: ReturnType<typeof db.getSettin
     } catch (aiErr: any) {
       db.addLog('warn', 'ai', `Auto-generation failed: ${aiErr.message}`);
     }
+  }
+}
+
+/**
+ * Process Facebook comments auto-reply
+ */
+async function processAutoCommentReplies(settings: ReturnType<typeof db.getSettings>) {
+  try {
+    const published = db.getPosts().filter((p) => p.status === 'published' && p.facebookPostId).slice(0, 3);
+    for (const post of published) {
+      if (!post.facebookPostId) continue;
+      const comments = await fetchFacebookPostComments(post.facebookPostId, settings.metaPageToken);
+      for (const c of comments) {
+        if (!c.id || db.isCommentReplied(c.id)) continue;
+
+        // Save incoming comment
+        db.saveComment({
+          id: c.id,
+          postId: post.facebookPostId,
+          postTitle: post.title || post.body.substring(0, 30),
+          fromName: c.from?.name || 'ফেসবুক ব্যবহারকারী',
+          fromId: c.from?.id,
+          message: c.message || '',
+          createdTime: c.created_time || new Date().toISOString(),
+          replied: false,
+        });
+
+        // Generate AI reply
+        const replyResult = await generateSmartCommentReply({
+          commentText: c.message || '',
+          commenterName: c.from?.name || 'সম্মানিত ভাই/বোন',
+          postTitle: post.title,
+          tone: settings.autoCommentReplyTone || 'islamic_warm',
+        });
+
+        // Attempt live reply
+        const replyRes = await replyToFacebookComment(c.id, replyResult.replyText, settings.metaPageToken);
+        db.markCommentReplied(c.id, replyResult.replyText);
+
+        if (replyRes.success) {
+          db.addLog(
+            'success',
+            'facebook',
+            `স্বয়ংক্রিয় কমেন্ট রিপ্লে সফল (${c.from?.name || 'ব্যবহারকারী'}): "${replyResult.replyText.substring(0, 40)}..."`
+          );
+        }
+      }
+    }
+  } catch (err) {
+    // Suppress background poll errors
   }
 }

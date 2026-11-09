@@ -10,6 +10,8 @@ import { QueueView } from './components/QueueView.tsx';
 import { CalendarView } from './components/CalendarView.tsx';
 import { HistoryView } from './components/HistoryView.tsx';
 import { FacebookConnectView } from './components/FacebookConnectView.tsx';
+import { BatchPhotoPosterView } from './components/BatchPhotoPosterView.tsx';
+import { CommentBotView } from './components/CommentBotView.tsx';
 import { SettingsView } from './components/SettingsView.tsx';
 import { AdminLockModal } from './components/AdminLockModal.tsx';
 import { api } from './services/api.ts';
@@ -120,6 +122,36 @@ export default function App() {
     const interval = setInterval(refreshData, 20000);
     return () => clearInterval(interval);
   }, [refreshData]);
+
+  // Synchronize Facebook credentials between localStorage and backend
+  useEffect(() => {
+    if (!settings) return;
+
+    const localToken = localStorage.getItem('mosafa_saved_page_token');
+    const localPageId = localStorage.getItem('mosafa_saved_page_id');
+    const localPageName = localStorage.getItem('mosafa_saved_page_name');
+
+    // If server has valid credentials, populate browser localStorage so forms stay populated across tabs & reloads
+    if (settings.metaPageToken && settings.metaPageToken.trim().length > 10) {
+      if (!localToken || localToken !== settings.metaPageToken) {
+        localStorage.setItem('mosafa_saved_page_token', settings.metaPageToken);
+      }
+      if (settings.metaPageId) {
+        localStorage.setItem('mosafa_saved_page_id', settings.metaPageId);
+      }
+      if (settings.metaPageName) {
+        localStorage.setItem('mosafa_saved_page_name', settings.metaPageName);
+      }
+    } else if (localToken && localToken.trim().length > 10 && (!settings.metaPageToken || settings.metaPageToken !== localToken.trim())) {
+      // If server is missing token but localStorage has it, restore server
+      api.updateSettings({
+        metaPageToken: localToken.trim(),
+        metaPageId: (localPageId || '1475947198932278').trim(),
+        metaPageName: (localPageName || 'The Mosafa').trim(),
+        isMetaConnected: true,
+      }).then(() => refreshData());
+    }
+  }, [settings, refreshData]);
 
   // Main Actions
   const handleToggleAutomation = async (action: 'start' | 'pause' | 'resume' | 'stop') => {
@@ -286,6 +318,23 @@ export default function App() {
               lang={lang}
               onPostsGenerated={refreshData}
               onRefreshCommands={refreshData}
+            />
+          )}
+
+          {activeTab === 'batchPhotoPoster' && (
+            <BatchPhotoPosterView
+              lang={lang}
+              libraryImages={images}
+              onPostsScheduled={refreshData}
+              onNavigateToQueue={() => setActiveTab('queue')}
+            />
+          )}
+
+          {activeTab === 'commentBot' && settings && (
+            <CommentBotView
+              settings={settings}
+              lang={lang}
+              onRefresh={refreshData}
             />
           )}
 

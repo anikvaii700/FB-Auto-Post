@@ -3,11 +3,11 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
 import { db } from './server/db.ts';
-import { generatePostsWithAI, regeneratePostWithFeedback } from './server/gemini.ts';
-import { publishPostToFacebook, testFacebookConnection } from './server/facebook.ts';
+import { generatePostsWithAI, regeneratePostWithFeedback, generateCaptionForImage, generateSmartCommentReply } from './server/gemini.ts';
+import { publishPostToFacebook, testFacebookConnection, fetchFacebookPostComments, replyToFacebookComment } from './server/facebook.ts';
 import { startBackgroundScheduler, stopBackgroundScheduler } from './server/scheduler.ts';
 import { SUPABASE_SQL_SCHEMA } from './server/supabase_schema.ts';
-import { Category, PostItem } from './src/types.ts';
+import { Category, PostItem, FacebookCommentItem } from './src/types.ts';
 
 dotenv.config();
 
@@ -15,7 +15,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
 
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
@@ -207,6 +207,7 @@ app.post('/api/posts/:id/publish-now', async (req, res) => {
       post,
       pageToken: settings.metaPageToken,
       pageId: settings.metaPageId,
+      pageName: settings.metaPageName || 'The Mosafa',
     });
 
     if (result.success) {
@@ -417,6 +418,191 @@ app.delete('/api/images/:id', (req, res) => {
   res.json({ success: ok });
 });
 
+// 10B. AI Image Caption Generation (Requirement #1)
+app.post('/api/ai/image-caption', async (req, res) => {
+  try {
+    const { imagePrompt, imageBase64, mimeType, theme, preferredTone, customHint } = req.body;
+    const result = await generateCaptionForImage({
+      imagePrompt,
+      imageBase64,
+      mimeType,
+      theme,
+      preferredTone,
+      customHint,
+    });
+    res.json({ success: true, ...result });
+  } catch (err: any) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// 10C. Batch Image Schedule Creator (Requirement #1: অনেকগুলো ছবি এক সাথে শিডিউলে পোস্ট করা)
+app.post('/api/ai/batch-image-posts', async (req, res) => {
+  try {
+    const { items, scheduleIntervalHours = 3, startDelayMinutes = 30 } = req.body;
+    if (!Array.isArray(items) || items.length === 0) {
+      return res.status(400).json({ success: false, error: 'No items provided for batch scheduling' });
+    }
+
+    const settings = db.getSettings();
+    const now = Date.now();
+    const intervalMs = scheduleIntervalHours * 60 * 60 * 1000;
+    const initialDelayMs = startDelayMinutes * 60 * 1000;
+
+    const newPosts: PostItem[] = items.map((item: any, idx: number) => {
+      const scheduledTime = item.scheduledAt || new Date(now + initialDelayMs + idx * intervalMs).toISOString();
+
+      return {
+        id: `post_batch_${Date.now()}_${idx}_${Math.random().toString(36).substring(2, 6)}`,
+        title: item.title || `ছবি পোস্ট #${idx + 1}`,
+        body: item.caption || item.body || '',
+        hashtags: Array.isArray(item.hashtags) ? item.hashtags : ['#TheMosafa', '#PhotoPost'],
+        categoryId: item.categoryId || 'custom_photo',
+        categoryName: item.categoryName || 'ছবি ও ক্যাপশন পোস্টার',
+        language: 'bn',
+        status: settings.publishingMode === 'auto' ? 'scheduled' : 'scheduled',
+        approvalMode: settings.publishingMode,
+        scheduledAt: scheduledTime,
+        imageUrl: item.imageUrl,
+        imageSource: 'upload',
+        retryCount: 0,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
+    });
+
+    db.savePosts(newPosts);
+    db.addLog(
+      'success',
+      'scheduler',
+      `ব্যাচ ফটো শিডিউলার: ${newPosts.length}টি ছবি ও ক্যাপশন শিডিউল কিউতে সফলভাবে যুক্ত হয়েছে।`
+    );
+
+    res.json({ success: true, count: newPosts.length, posts: newPosts });
+  } catch (err: any) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// 10D. Facebook Comment Management & Auto-Reply Bot (Requirement #3)
+app.get('/api/comments', async (req, res) => {
+  try {
+    const settings = db.getSettings();
+    const storedComments = db.getComments();
+
+    // If connected to Facebook, fetch fresh comments on recent posts
+    if (settings.isMetaConnected && settings.metaPageToken) {
+      const publishedPosts = db.getPosts().filter((p) => p.status === 'published' && p.facebookPostId).slice(0, 5);
+
+      for (const p of publishedPosts) {
+        if (!p.facebookPostId) continue;
+        try {
+          const fbComments = await fetchFacebookPostComments(p.facebookPostId, settings.metaPageToken);
+          for (const fc of fbComments) {
+            const existing = storedComments.find((c) => c.id === fc.id);
+            if (!existing) {
+              const newComment: FacebookCommentItem = {
+                id: fc.id,
+                postId: p.facebookPostId,
+                postTitle: p.title || p.body.substring(0, 40),
+                fromName: fc.from?.name || 'ফেসবুক ব্যবহারকারী',
+                fromId: fc.from?.id,
+                message: fc.message || '',
+                createdTime: fc.created_time || new Date().toISOString(),
+                replied: false,
+              };
+              db.saveComment(newComment);
+            }
+          }
+        } catch (_) {}
+      }
+    }
+
+    res.json({
+      success: true,
+      comments: db.getComments(),
+      isBotActive: settings.isAutoCommentReplyActive ?? true,
+      botTone: settings.autoCommentReplyTone || 'islamic_warm',
+    });
+  } catch (err: any) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// Test or Generate Comment Reply
+app.post('/api/comments/test-reply', async (req, res) => {
+  try {
+    const { commentText, commenterName, tone, postTitle } = req.body;
+    if (!commentText) {
+      return res.status(400).json({ success: false, error: 'Comment text is required' });
+    }
+
+    const reply = await generateSmartCommentReply({
+      commentText,
+      commenterName,
+      tone,
+      postTitle,
+    });
+
+    res.json({ success: true, ...reply });
+  } catch (err: any) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// Reply to a specific comment (live or simulated)
+app.post('/api/comments/reply', async (req, res) => {
+  try {
+    const { commentId, message } = req.body;
+    if (!commentId || !message) {
+      return res.status(400).json({ success: false, error: 'commentId and message are required' });
+    }
+
+    const settings = db.getSettings();
+    let replySuccess = false;
+    let replyId: string | undefined;
+
+    if (settings.isMetaConnected && settings.metaPageToken && !commentId.startsWith('sim_')) {
+      const fbRes = await replyToFacebookComment(commentId, message, settings.metaPageToken);
+      replySuccess = fbRes.success;
+      replyId = fbRes.replyId;
+      if (!replySuccess) {
+        db.addLog('warn', 'facebook', `Live comment reply notice: ${fbRes.error}`);
+      }
+    } else {
+      replySuccess = true;
+      replyId = `sim_reply_${Date.now()}`;
+    }
+
+    // Mark replied in database
+    db.markCommentReplied(commentId, message);
+    db.addLog('success', 'facebook', `কমেন্ট রিপ্লে পাঠানো হয়েছে: "${message.substring(0, 50)}..."`);
+
+    res.json({ success: true, replyId, repliedMessage: message });
+  } catch (err: any) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// Toggle Comment Auto-Reply Bot
+app.post('/api/comments/toggle-bot', (req, res) => {
+  try {
+    const { isActive, tone } = req.body;
+    const updated = db.updateSettings({
+      isAutoCommentReplyActive: isActive !== undefined ? isActive : true,
+      autoCommentReplyTone: tone || 'islamic_warm',
+    });
+    db.addLog(
+      'info',
+      'system',
+      `কমেন্ট অটো-রিপ্লাই বট ${isActive ? 'চালু' : 'বন্ধ'} করা হয়েছে। (টোন: ${tone || 'ইসলামিক'})`
+    );
+    res.json({ success: true, settings: updated });
+  } catch (err: any) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
 // 11. System Logs
 app.get('/api/logs', (req, res) => {
   res.json({ success: true, logs: db.getLogs() });
@@ -469,7 +655,10 @@ async function bootstrap() {
   if (!isProd) {
     const { createServer: createViteServer } = await import('vite');
     const vite = await createViteServer({
-      server: { middlewareMode: true },
+      server: {
+        middlewareMode: true,
+        hmr: false,
+      },
       appType: 'spa',
     });
     app.use(vite.middlewares);
@@ -481,10 +670,34 @@ async function bootstrap() {
     });
   }
 
-  app.listen(PORT, '0.0.0.0', () => {
+  const server = app.listen(PORT, '0.0.0.0', () => {
     console.log(`[MoSaFa AI Auto Poster] Server running at http://localhost:${PORT}`);
     startBackgroundScheduler();
   });
+
+  server.on('error', (err: any) => {
+    if (err.code === 'EADDRINUSE') {
+      console.warn(`[MoSaFa AI Auto Poster] Port ${PORT} is busy, retrying in 1s...`);
+      setTimeout(() => {
+        try {
+          server.close();
+        } catch (_) {}
+        server.listen(PORT, '0.0.0.0');
+      }, 1000);
+    } else {
+      console.error('[MoSaFa AI Auto Poster] Server error:', err);
+    }
+  });
+
+  const handleShutdown = () => {
+    stopBackgroundScheduler();
+    server.close(() => {
+      process.exit(0);
+    });
+  };
+
+  process.on('SIGTERM', handleShutdown);
+  process.on('SIGINT', handleShutdown);
 }
 
 bootstrap().catch((err) => {

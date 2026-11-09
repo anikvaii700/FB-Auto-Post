@@ -13,12 +13,16 @@ import {
   X,
   Radio,
   Power,
+  Images,
+  Bot,
 } from 'lucide-react';
 import { translations } from '../translations.ts';
 
 export type NavTab =
   | 'dashboard'
   | 'commandCenter'
+  | 'batchPhotoPoster'
+  | 'commentBot'
   | 'contentGenerator'
   | 'categories'
   | 'imageLibrary'
@@ -55,7 +59,9 @@ export const Sidebar: React.FC<Props> = ({
 
   const navItems: { id: NavTab; label: string; icon: React.ReactNode; badge?: number; badgeColor?: string }[] = [
     { id: 'dashboard', label: t.dashboard, icon: <LayoutDashboard className="w-4 h-4" /> },
+    { id: 'batchPhotoPoster', label: t.batchPhotoPoster, icon: <Images className="w-4 h-4 text-cyan-500" /> },
     { id: 'commandCenter', label: t.commandCenter, icon: <Terminal className="w-4 h-4 text-emerald-500" /> },
+    { id: 'commentBot', label: t.commentBot, icon: <Bot className="w-4 h-4 text-purple-500" /> },
     { id: 'contentGenerator', label: t.contentGenerator, icon: <Sparkles className="w-4 h-4 text-amber-500" /> },
     { id: 'categories', label: t.categories, icon: <Layers className="w-4 h-4" /> },
     { id: 'imageLibrary', label: t.imageLibrary, icon: <ImageIcon className="w-4 h-4" /> },

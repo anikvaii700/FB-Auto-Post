@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { AdminSettings, Category, CommandHistoryItem, LibraryImage, PostItem, SystemLog } from '../src/types.ts';
+import { AdminSettings, Category, CommandHistoryItem, FacebookCommentItem, LibraryImage, PostItem, SystemLog } from '../src/types.ts';
 
 const DATA_DIR = path.resolve(process.cwd(), 'data');
 const DB_FILE = path.join(DATA_DIR, 'mosafa_db.json');
@@ -12,6 +12,7 @@ export interface DatabaseState {
   commands: CommandHistoryItem[];
   images: LibraryImage[];
   logs: SystemLog[];
+  comments?: FacebookCommentItem[];
 }
 
 const DEFAULT_CATEGORIES: Category[] = [
@@ -227,8 +228,8 @@ const DEFAULT_SETTINGS: AdminSettings = {
   metaAppSecret: '',
   metaUserToken: '',
   metaPageToken: '',
-  metaPageId: '',
-  metaPageName: 'MoSaFa Official Page (Demo / Connect to Live)',
+  metaPageId: '1475947198932278',
+  metaPageName: 'The Mosafa',
   isMetaConnected: false,
   supabaseUrl: '',
   supabaseAnonKey: '',
@@ -576,6 +577,46 @@ class DatabaseManager {
 
   public getLogs(): SystemLog[] {
     return this.state.logs;
+  }
+
+  public getComments(): FacebookCommentItem[] {
+    if (!this.state.comments) {
+      this.state.comments = [];
+    }
+    return this.state.comments;
+  }
+
+  public saveComment(comment: FacebookCommentItem) {
+    if (!this.state.comments) {
+      this.state.comments = [];
+    }
+    const idx = this.state.comments.findIndex((c) => c.id === comment.id);
+    if (idx >= 0) {
+      this.state.comments[idx] = comment;
+    } else {
+      this.state.comments.unshift(comment);
+    }
+    if (this.state.comments.length > 300) {
+      this.state.comments = this.state.comments.slice(0, 300);
+    }
+    this.save();
+  }
+
+  public markCommentReplied(id: string, replyText: string) {
+    if (!this.state.comments) return;
+    const comment = this.state.comments.find((c) => c.id === id);
+    if (comment) {
+      comment.replied = true;
+      comment.replyText = replyText;
+      comment.repliedAt = new Date().toISOString();
+      this.save();
+    }
+  }
+
+  public isCommentReplied(id: string): boolean {
+    if (!this.state.comments) return false;
+    const comment = this.state.comments.find((c) => c.id === id);
+    return Boolean(comment?.replied);
   }
 }
 

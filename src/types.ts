@@ -90,6 +90,22 @@ export interface AdminSettings {
   isSupabaseConfigured: boolean;
   notifyOnPublish: boolean;
   autoAdvanceHours: number;
+  isAutoCommentReplyActive?: boolean;
+  autoCommentReplyTone?: 'islamic_warm' | 'friendly' | 'professional';
+}
+
+export interface FacebookCommentItem {
+  id: string;
+  postId: string;
+  postTitle?: string;
+  fromName: string;
+  fromId?: string;
+  message: string;
+  createdTime: string;
+  replied: boolean;
+  replyText?: string;
+  repliedAt?: string;
+  category?: 'salat_dua' | 'praise' | 'query' | 'general' | 'critical';
 }
 
 export interface SystemLog {
@@ -115,3 +131,4 @@ export interface DashboardMetrics {
   isMetaConnected: boolean;
   metaPageName?: string;
 }
+

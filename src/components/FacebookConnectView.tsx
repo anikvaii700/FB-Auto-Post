@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Share2,
   CheckCircle2,
@@ -21,12 +21,45 @@ interface Props {
 }
 
 export const FacebookConnectView: React.FC<Props> = ({ settings, lang, onRefresh }) => {
-  const [userToken, setUserToken] = useState(settings.metaUserToken || '');
-  const [pageId, setPageId] = useState(settings.metaPageId || '');
-  const [pageToken, setPageToken] = useState(settings.metaPageToken || '');
-  const [pageName, setPageName] = useState(settings.metaPageName || '');
-  const [appId, setAppId] = useState(settings.metaAppId || '');
-  const [appSecret, setAppSecret] = useState(settings.metaAppSecret || '');
+  const [userToken, setUserToken] = useState(() => settings.metaUserToken || localStorage.getItem('mosafa_meta_user_token') || '');
+  const [pageId, setPageId] = useState(() => settings.metaPageId || localStorage.getItem('mosafa_saved_page_id') || '1475947198932278');
+  const [pageToken, setPageToken] = useState(() => settings.metaPageToken || localStorage.getItem('mosafa_saved_page_token') || '');
+  const [pageName, setPageName] = useState(() => {
+    if (settings.metaPageName && settings.metaPageName !== 'MoSaFa Official Page (Demo / Connect to Live)') {
+      return settings.metaPageName;
+    }
+    return localStorage.getItem('mosafa_saved_page_name') || 'The Mosafa';
+  });
+  const [appId, setAppId] = useState(() => settings.metaAppId || localStorage.getItem('mosafa_meta_app_id') || '');
+  const [appSecret, setAppSecret] = useState(() => settings.metaAppSecret || localStorage.getItem('mosafa_meta_app_secret') || '');
+
+  // Keep local state in sync only if settings has non-empty values
+  useEffect(() => {
+    if (settings.metaPageId) {
+      setPageId(settings.metaPageId);
+      localStorage.setItem('mosafa_saved_page_id', settings.metaPageId);
+    }
+    if (settings.metaPageName && settings.metaPageName !== 'MoSaFa Official Page (Demo / Connect to Live)') {
+      setPageName(settings.metaPageName);
+      localStorage.setItem('mosafa_saved_page_name', settings.metaPageName);
+    }
+    if (settings.metaPageToken) {
+      setPageToken(settings.metaPageToken);
+      localStorage.setItem('mosafa_saved_page_token', settings.metaPageToken);
+    }
+    if (settings.metaUserToken) {
+      setUserToken(settings.metaUserToken);
+      localStorage.setItem('mosafa_meta_user_token', settings.metaUserToken);
+    }
+    if (settings.metaAppId) {
+      setAppId(settings.metaAppId);
+      localStorage.setItem('mosafa_meta_app_id', settings.metaAppId);
+    }
+    if (settings.metaAppSecret) {
+      setAppSecret(settings.metaAppSecret);
+      localStorage.setItem('mosafa_meta_app_secret', settings.metaAppSecret);
+    }
+  }, [settings]);
 
   const [testing, setTesting] = useState(false);
   const [testResult, setTestResult] = useState<{
@@ -38,6 +71,21 @@ export const FacebookConnectView: React.FC<Props> = ({ settings, lang, onRefresh
 
   const [saving, setSaving] = useState(false);
   const [toastMsg, setToastMsg] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+
+  const handlePageTokenChange = (val: string) => {
+    setPageToken(val);
+    localStorage.setItem('mosafa_saved_page_token', val);
+  };
+
+  const handlePageIdChange = (val: string) => {
+    setPageId(val);
+    localStorage.setItem('mosafa_saved_page_id', val);
+  };
+
+  const handlePageNameChange = (val: string) => {
+    setPageName(val);
+    localStorage.setItem('mosafa_saved_page_name', val);
+  };
 
   const handleTestConnection = async () => {
     const tokenToTest = pageToken || userToken;
@@ -58,8 +106,8 @@ export const FacebookConnectView: React.FC<Props> = ({ settings, lang, onRefresh
       setTestResult(res);
 
       if (res.valid) {
-        let selectedId = pageId;
-        let selectedName = pageName;
+        let selectedId = pageId || '1475947198932278';
+        let selectedName = pageName || 'The Mosafa';
         let selectedToken = tokenToTest;
 
         if (res.pages && res.pages.length > 0) {
@@ -78,7 +126,11 @@ export const FacebookConnectView: React.FC<Props> = ({ settings, lang, onRefresh
           setPageName(selectedName);
         }
 
-        // AUTO-SAVE IMMEDIATELY TO SERVER!
+        // AUTO-SAVE IMMEDIATELY TO LOCALSTORAGE AND SERVER!
+        localStorage.setItem('mosafa_saved_page_token', selectedToken);
+        localStorage.setItem('mosafa_saved_page_id', selectedId);
+        localStorage.setItem('mosafa_saved_page_name', selectedName);
+
         await api.updateSettings({
           metaPageToken: selectedToken,
           metaPageId: selectedId,
@@ -89,8 +141,8 @@ export const FacebookConnectView: React.FC<Props> = ({ settings, lang, onRefresh
         setToastMsg({
           type: 'success',
           text: lang === 'bn'
-            ? `সংযোগ সফল ও স্বয়ংক্রিয়ভাবে সংরক্ষিত হয়েছে! পেজ: ${selectedName} (ID: ${selectedId})`
-            : `Connected and auto-saved successfully! Page: ${selectedName}`,
+            ? `সংযোগ সফল ও স্থায়ীভাবে সংরক্ষিত হয়েছে! পেজ: ${selectedName} (ID: ${selectedId})`
+            : `Connected and permanently saved! Page: ${selectedName}`,
         });
 
         onRefresh();
@@ -115,24 +167,34 @@ export const FacebookConnectView: React.FC<Props> = ({ settings, lang, onRefresh
     }
   };
 
-  const handleSave = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSave = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
     setSaving(true);
     setToastMsg(null);
     try {
+      // Immediate localStorage backup
+      localStorage.setItem('mosafa_saved_page_token', pageToken.trim());
+      localStorage.setItem('mosafa_saved_page_id', pageId.trim());
+      localStorage.setItem('mosafa_saved_page_name', pageName.trim());
+      localStorage.setItem('mosafa_meta_user_token', userToken.trim());
+      localStorage.setItem('mosafa_meta_app_id', appId.trim());
+      localStorage.setItem('mosafa_meta_app_secret', appSecret.trim());
+
       const isConn = Boolean(pageToken.trim() && pageId.trim());
       await api.updateSettings({
         metaAppId: appId.trim(),
         metaAppSecret: appSecret.trim(),
         metaUserToken: userToken.trim(),
         metaPageToken: pageToken.trim(),
-        metaPageId: pageId.trim(),
-        metaPageName: pageName.trim(),
+        metaPageId: pageId.trim() || '1475947198932278',
+        metaPageName: pageName.trim() || 'The Mosafa',
         isMetaConnected: isConn,
       });
       setToastMsg({
         type: 'success',
-        text: lang === 'bn' ? 'ফেসবুক সেটিংস সফলভাবে ডাটাবেজে সংরক্ষিত হয়েছে!' : 'Facebook credentials saved to database successfully!',
+        text: lang === 'bn'
+          ? '✓ ফেসবুক সেটিংস ও টোকেন ব্রাউজার ও ডাটাবেজে স্থায়ীভাবে সেভ হয়েছে! (এখন থেকে আর মুছবে না)'
+          : '✓ Facebook credentials permanently saved to browser & database!',
       });
       onRefresh();
     } catch (err: any) {
@@ -146,6 +208,11 @@ export const FacebookConnectView: React.FC<Props> = ({ settings, lang, onRefresh
   };
 
   const handleDisconnect = async () => {
+    localStorage.removeItem('mosafa_saved_page_token');
+    localStorage.removeItem('mosafa_saved_page_id');
+    localStorage.removeItem('mosafa_saved_page_name');
+    localStorage.removeItem('mosafa_meta_user_token');
+
     await api.updateSettings({
       metaUserToken: '',
       metaPageToken: '',
@@ -226,7 +293,7 @@ export const FacebookConnectView: React.FC<Props> = ({ settings, lang, onRefresh
               <textarea
                 rows={3}
                 value={pageToken}
-                onChange={(e) => setPageToken(e.target.value)}
+                onChange={(e) => handlePageTokenChange(e.target.value)}
                 placeholder="EAA..."
                 className="w-full p-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white font-mono text-[11px]"
               />
@@ -246,8 +313,8 @@ export const FacebookConnectView: React.FC<Props> = ({ settings, lang, onRefresh
                 <input
                   type="text"
                   value={pageId}
-                  onChange={(e) => setPageId(e.target.value)}
-                  placeholder="e.g. 1029384756182"
+                  onChange={(e) => handlePageIdChange(e.target.value)}
+                  placeholder="e.g. 1475947198932278"
                   className="w-full p-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white font-mono"
                 />
               </div>
@@ -259,8 +326,8 @@ export const FacebookConnectView: React.FC<Props> = ({ settings, lang, onRefresh
                 <input
                   type="text"
                   value={pageName}
-                  onChange={(e) => setPageName(e.target.value)}
-                  placeholder="e.g. MoSaFa Official Page"
+                  onChange={(e) => handlePageNameChange(e.target.value)}
+                  placeholder="e.g. The Mosafa"
                   className="w-full p-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-slate-900 dark:text-white"
                 />
               </div>
@@ -392,6 +459,11 @@ export const FacebookConnectView: React.FC<Props> = ({ settings, lang, onRefresh
                         setPageId(p.id);
                         setPageName(p.name);
                         setPageToken(targetToken);
+
+                        localStorage.setItem('mosafa_saved_page_token', targetToken);
+                        localStorage.setItem('mosafa_saved_page_id', p.id);
+                        localStorage.setItem('mosafa_saved_page_name', p.name);
+
                         await api.updateSettings({
                           metaPageToken: targetToken,
                           metaPageId: p.id,
