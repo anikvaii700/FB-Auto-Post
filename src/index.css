@@ -1,0 +1,62 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@layer base {
+  :root {
+    --font-sans: 'Plus Jakarta Sans', 'Hind Siliguri', system-ui, -apple-system, sans-serif;
+  }
+  
+  html, body {
+    font-family: var(--font-sans);
+    background-color: #080c1e;
+    background-image: url('/assets/aistudio/image_0add04d7.png');
+    background-attachment: fixed;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    @apply antialiased text-slate-100 min-h-screen;
+  }
+
+  /* When dark class is active, maintain rich backdrop */
+  .dark html, .dark body {
+    background-color: #080c1e;
+    background-image: url('/assets/aistudio/image_0add04d7.png');
+    background-attachment: fixed;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    @apply text-slate-100;
+  }
+}
+
+/* Glassmorphism utility for modern card backdrops */
+.glass-panel {
+  background: rgba(13, 19, 43, 0.78);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.glass-header {
+  background: rgba(8, 12, 30, 0.88);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Custom scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(192, 38, 211, 0.35);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(217, 70, 239, 0.6);
+}

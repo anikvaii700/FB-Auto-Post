@@ -1,0 +1,8 @@
+{
+  "name": "MoSaFa AI Auto Poster",
+  "description": "Personal AI-powered Facebook content automation and auto-publishing platform with Bengali and English AI generation, smart scheduling, and Meta Graph API integration.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
