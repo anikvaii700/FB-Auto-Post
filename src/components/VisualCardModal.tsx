@@ -279,19 +279,19 @@ export const VisualCardModal: React.FC<Props> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-md p-3 sm:p-5 overflow-y-auto">
-      <div className="w-full max-w-4xl bg-slate-900 border border-slate-700/80 rounded-2xl shadow-2xl p-5 my-auto flex flex-col max-h-[95vh] overflow-y-auto">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-md p-3 sm:p-5 overflow-y-auto">
+      <div className="w-full max-w-4xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl p-5 my-auto flex flex-col max-h-[95vh] overflow-y-auto">
         {/* Header */}
-        <div className="flex items-center justify-between pb-3 border-b border-slate-800">
+        <div className="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-800">
           <div className="flex items-center gap-2.5">
             <div className="p-2 bg-gradient-to-tr from-amber-500 to-rose-500 rounded-xl text-white">
               <Sparkles className="w-5 h-5" />
             </div>
             <div>
-              <h2 className="text-base font-bold text-white">
+              <h2 className="text-base font-bold text-slate-900 dark:text-white">
                 {lang === 'bn' ? 'ফেসবুক ভিজ্যুয়াল ব্যাকগ্রাউন্ড কার্ড ও পোস্টার জেনারেটর' : 'Facebook Visual Card & Poster Generator'}
               </h2>
-              <p className="text-xs text-slate-400">
+              <p className="text-xs text-slate-500 dark:text-slate-400">
                 {lang === 'bn'
                   ? 'আপনার পোস্টের জন্য আকর্ষণীয় ব্যাকগ্রাউন্ড ইমেজ ও ফন্ট দিয়ে এইচডি সোশ্যাল ব্যানার তৈরি করুন।'
                   : 'Generate a high-definition social visual card for Facebook with aesthetic typography.'}
@@ -300,7 +300,7 @@ export const VisualCardModal: React.FC<Props> = ({
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 cursor-pointer"
+            className="p-1.5 rounded-lg text-slate-400 hover:text-slate-900 hover:bg-slate-100 dark:hover:text-white dark:hover:bg-slate-800 cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
@@ -312,8 +312,8 @@ export const VisualCardModal: React.FC<Props> = ({
           <div className="lg:col-span-6 space-y-4 text-xs">
             {/* Background Style Picker */}
             <div>
-              <label className="block font-semibold text-slate-200 mb-1.5 flex items-center gap-1.5">
-                <Palette className="w-3.5 h-3.5 text-amber-400" />
+              <label className="block font-semibold text-slate-700 dark:text-slate-200 mb-1.5 flex items-center gap-1.5">
+                <Palette className="w-3.5 h-3.5 text-amber-500" />
                 <span>{lang === 'bn' ? 'ব্যাকগ্রাউন্ড নির্বাচন করুন:' : 'Choose Background Style:'}</span>
               </label>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
@@ -324,8 +324,8 @@ export const VisualCardModal: React.FC<Props> = ({
                     onClick={() => setSelectedBg(bg)}
                     className={`p-2 rounded-xl border text-left cursor-pointer transition-all ${
                       selectedBg.id === bg.id
-                        ? 'border-amber-400 bg-amber-500/10 text-white ring-1 ring-amber-400'
-                        : 'border-slate-800 bg-slate-800/60 text-slate-300 hover:border-slate-700'
+                        ? 'border-emerald-500 bg-emerald-50/70 dark:bg-emerald-500/20 text-emerald-900 dark:text-white ring-1 ring-emerald-500'
+                        : 'border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/60 text-slate-700 dark:text-slate-300 hover:border-slate-300'
                     }`}
                   >
                     <div className="font-semibold text-[11px] truncate">{lang === 'bn' ? bg.nameBn : bg.name}</div>
@@ -336,8 +336,8 @@ export const VisualCardModal: React.FC<Props> = ({
 
             {/* Title / Hook Input */}
             <div>
-              <label className="block font-semibold text-slate-200 mb-1 flex items-center gap-1.5">
-                <Type className="w-3.5 h-3.5 text-blue-400" />
+              <label className="block font-semibold text-slate-700 dark:text-slate-200 mb-1 flex items-center gap-1.5">
+                <Type className="w-3.5 h-3.5 text-blue-500" />
                 <span>{lang === 'bn' ? 'কার্ডের শিরোনাম / হুক:' : 'Card Title / Hook:'}</span>
               </label>
               <input
@@ -345,27 +345,27 @@ export const VisualCardModal: React.FC<Props> = ({
                 value={cardTitle}
                 onChange={(e) => setCardTitle(e.target.value)}
                 placeholder="যেমন: ইস্তিগফারের অলৌকিক রহমত"
-                className="w-full p-2 bg-slate-800 border border-slate-700 rounded-lg text-white font-sans text-xs"
+                className="w-full p-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-slate-800 dark:text-white font-sans text-xs focus:ring-2 focus:ring-emerald-500 outline-none"
               />
             </div>
 
             {/* Body Quote Input */}
             <div>
-              <label className="block font-semibold text-slate-200 mb-1">
+              <label className="block font-semibold text-slate-700 dark:text-slate-200 mb-1">
                 {lang === 'bn' ? 'মূল বাণী বা কোট (কার্ডে প্রদর্শনের জন্য):' : 'Main Quote / Text for Card:'}
               </label>
               <textarea
                 rows={3}
                 value={cardBody}
                 onChange={(e) => setCardBody(e.target.value)}
-                className="w-full p-2 bg-slate-800 border border-slate-700 rounded-lg text-white text-xs leading-relaxed"
+                className="w-full p-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-slate-800 dark:text-white text-xs leading-relaxed focus:ring-2 focus:ring-emerald-500 outline-none"
               />
             </div>
 
             {/* Slider Settings: Overlay & Font Size */}
-            <div className="grid grid-cols-2 gap-3 bg-slate-800/50 p-3 rounded-xl border border-slate-800">
+            <div className="grid grid-cols-2 gap-3 bg-slate-50 dark:bg-slate-800/50 p-3 rounded-xl border border-slate-200 dark:border-slate-800">
               <div>
-                <label className="block text-slate-300 text-[11px] mb-1">
+                <label className="block text-slate-600 dark:text-slate-300 text-[11px] mb-1 font-medium">
                   {lang === 'bn' ? 'ব্যাকগ্রাউন্ড ডার্কনেস:' : 'Background Darkness:'} {Math.round(overlayOpacity * 100)}%
                 </label>
                 <input
@@ -375,12 +375,12 @@ export const VisualCardModal: React.FC<Props> = ({
                   step="0.05"
                   value={overlayOpacity}
                   onChange={(e) => setOverlayOpacity(parseFloat(e.target.value))}
-                  className="w-full accent-amber-500 cursor-pointer"
+                  className="w-full accent-emerald-500 cursor-pointer"
                 />
               </div>
 
               <div>
-                <label className="block text-slate-300 text-[11px] mb-1">
+                <label className="block text-slate-600 dark:text-slate-300 text-[11px] mb-1 font-medium">
                   {lang === 'bn' ? 'ফন্ট সাইজ:' : 'Font Size:'} {fontSize}px
                 </label>
                 <input
@@ -390,7 +390,7 @@ export const VisualCardModal: React.FC<Props> = ({
                   step="2"
                   value={fontSize}
                   onChange={(e) => setFontSize(parseInt(e.target.value, 10))}
-                  className="w-full accent-amber-500 cursor-pointer"
+                  className="w-full accent-emerald-500 cursor-pointer"
                 />
               </div>
             </div>
@@ -398,29 +398,29 @@ export const VisualCardModal: React.FC<Props> = ({
             {/* Page Branding & Aspect Ratio */}
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="block font-semibold text-slate-200 mb-1">
+                <label className="block font-semibold text-slate-700 dark:text-slate-200 mb-1">
                   {lang === 'bn' ? 'পেজ ব্রান্ডিং / ওয়াটারমার্ক:' : 'Page Watermark:'}
                 </label>
                 <input
                   type="text"
                   value={pageBranding}
                   onChange={(e) => setPageBranding(e.target.value)}
-                  className="w-full p-2 bg-slate-800 border border-slate-700 rounded-lg text-white text-xs font-semibold"
+                  className="w-full p-2 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg text-slate-800 dark:text-white text-xs font-semibold focus:ring-2 focus:ring-emerald-500 outline-none"
                 />
               </div>
 
               <div>
-                <label className="block font-semibold text-slate-200 mb-1">
+                <label className="block font-semibold text-slate-700 dark:text-slate-200 mb-1">
                   {lang === 'bn' ? 'সাইজ ফরম্যাট:' : 'Aspect Ratio:'}
                 </label>
                 <div className="flex gap-2">
                   <button
                     type="button"
                     onClick={() => setAspectRatio('1:1')}
-                    className={`flex-1 py-1.5 rounded-lg border text-xs font-medium cursor-pointer ${
+                    className={`flex-1 py-1.5 rounded-lg border text-xs font-medium cursor-pointer transition-colors ${
                       aspectRatio === '1:1'
-                        ? 'border-amber-400 bg-amber-500/20 text-amber-300'
-                        : 'border-slate-700 bg-slate-800 text-slate-300'
+                        ? 'border-emerald-500 bg-emerald-50 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-300'
+                        : 'border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300'
                     }`}
                   >
                     1:1 Square
@@ -428,10 +428,10 @@ export const VisualCardModal: React.FC<Props> = ({
                   <button
                     type="button"
                     onClick={() => setAspectRatio('16:9')}
-                    className={`flex-1 py-1.5 rounded-lg border text-xs font-medium cursor-pointer ${
+                    className={`flex-1 py-1.5 rounded-lg border text-xs font-medium cursor-pointer transition-colors ${
                       aspectRatio === '16:9'
-                        ? 'border-amber-400 bg-amber-500/20 text-amber-300'
-                        : 'border-slate-700 bg-slate-800 text-slate-300'
+                        ? 'border-emerald-500 bg-emerald-50 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-300'
+                        : 'border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300'
                     }`}
                   >
                     16:9 Banner
@@ -442,27 +442,27 @@ export const VisualCardModal: React.FC<Props> = ({
           </div>
 
           {/* Live Preview (Right 6 cols) */}
-          <div className="lg:col-span-6 flex flex-col items-center justify-center bg-slate-950/60 p-3 rounded-2xl border border-slate-800">
-            <p className="text-[11px] font-semibold text-slate-400 mb-2 flex items-center gap-1.5">
-              <ImageIcon className="w-3.5 h-3.5 text-amber-400" />
+          <div className="lg:col-span-6 flex flex-col items-center justify-center bg-slate-50 dark:bg-slate-950/60 p-3 rounded-2xl border border-slate-200 dark:border-slate-800">
+            <p className="text-[11px] font-semibold text-slate-600 dark:text-slate-400 mb-2 flex items-center gap-1.5">
+              <ImageIcon className="w-3.5 h-3.5 text-amber-500" />
               <span>{lang === 'bn' ? 'লাইভ এইচডি পোস্টার প্রিভিউ:' : 'HD Social Poster Live Preview:'}</span>
             </p>
 
-            <div className="w-full flex items-center justify-center overflow-hidden rounded-xl shadow-xl max-h-[360px]">
+            <div className="w-full flex items-center justify-center overflow-hidden rounded-xl shadow-md max-h-[360px]">
               <canvas
                 ref={canvasRef}
-                className="w-full h-auto max-h-[350px] object-contain rounded-xl border border-slate-700"
+                className="w-full h-auto max-h-[350px] object-contain rounded-xl border border-slate-200 dark:border-slate-700"
               />
             </div>
           </div>
         </div>
 
         {/* Footer Actions */}
-        <div className="flex flex-wrap items-center justify-between gap-3 pt-4 mt-4 border-t border-slate-800">
+        <div className="flex flex-wrap items-center justify-between gap-3 pt-4 mt-4 border-t border-slate-200 dark:border-slate-800">
           <button
             type="button"
             onClick={handleDownload}
-            className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl font-medium text-xs flex items-center gap-1.5 cursor-pointer"
+            className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 dark:bg-slate-800 dark:hover:bg-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 rounded-xl font-medium text-xs flex items-center gap-1.5 cursor-pointer transition-colors"
           >
             <Download className="w-4 h-4" />
             <span>{lang === 'bn' ? 'এইচডি ইমেজ ডাউনলোড করুন' : 'Download HD Image'}</span>
@@ -472,7 +472,7 @@ export const VisualCardModal: React.FC<Props> = ({
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 bg-slate-800 text-slate-300 hover:text-white rounded-xl text-xs cursor-pointer font-medium"
+              className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:text-white rounded-xl text-xs cursor-pointer font-medium transition-colors"
             >
               {lang === 'bn' ? 'বাতিল' : 'Cancel'}
             </button>

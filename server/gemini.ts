@@ -4,16 +4,9 @@ import { Category, PostItem } from '../src/types.ts';
 
 dotenv.config();
 
-const apiKey = process.env.GEMINI_API_KEY || '';
+const apiKey = process.env.GEMINI_API_KEY || process.env.API_KEY;
 
-const ai = new GoogleGenAI({
-  apiKey,
-  httpOptions: {
-    headers: {
-      'User-Agent': 'aistudio-build',
-    },
-  },
-});
+const ai = new GoogleGenAI(apiKey ? { apiKey } : {});
 
 export interface GeneratedContentOutput {
   title: string;

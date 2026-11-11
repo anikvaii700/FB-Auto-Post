@@ -28,7 +28,7 @@ import {
 export default function App() {
   // Theme & Language
   const [isDark, setIsDark] = useState<boolean>(() => {
-    return localStorage.getItem('mosafa_theme') === 'dark' || true;
+    return localStorage.getItem('mosafa_theme') === 'dark';
   });
   const [lang, setLang] = useState<'en' | 'bn'>(() => {
     return (localStorage.getItem('mosafa_lang') as 'en' | 'bn') || 'bn';
@@ -225,7 +225,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#080c1e] bg-[url('/assets/aistudio/image_0add04d7.png')] bg-cover bg-fixed bg-center text-slate-100 flex flex-col font-sans">
+    <div className="min-h-screen light-theme-canvas text-slate-800 dark:text-slate-100 flex flex-col font-sans transition-colors duration-200">
       {/* Admin Lock Gate */}
       <AdminLockModal isOpen={isLocked} onSuccess={handleUnlock} lang={lang} />
 
@@ -245,20 +245,20 @@ export default function App() {
       {globalToast && (
         <div className="fixed top-20 right-4 z-50 max-w-md w-full animate-in fade-in slide-in-from-top-4 duration-300">
           <div
-            className={`p-4 rounded-2xl shadow-2xl backdrop-blur-xl border flex flex-col gap-2 ${
+            className={`p-4 rounded-2xl shadow-xl backdrop-blur-xl border flex flex-col gap-2 ${
               globalToast.type === 'success'
-                ? 'bg-emerald-950/90 border-emerald-500/50 text-emerald-100'
+                ? 'bg-emerald-50/95 dark:bg-emerald-950/90 border-emerald-300 dark:border-emerald-500/50 text-emerald-900 dark:text-emerald-100'
                 : globalToast.type === 'warn'
-                ? 'bg-amber-950/90 border-amber-500/50 text-amber-100'
-                : 'bg-rose-950/90 border-rose-500/50 text-rose-100'
+                ? 'bg-amber-50/95 dark:bg-amber-950/90 border-amber-300 dark:border-amber-500/50 text-amber-900 dark:text-amber-100'
+                : 'bg-rose-50/95 dark:bg-rose-950/90 border-rose-300 dark:border-rose-500/50 text-rose-900 dark:text-rose-100'
             }`}
           >
             <div className="flex items-start justify-between gap-3">
-              <span className="text-xs font-medium leading-relaxed">{globalToast.message}</span>
+              <span className="text-xs font-semibold leading-relaxed">{globalToast.message}</span>
               <button
                 type="button"
                 onClick={() => setGlobalToast(null)}
-                className="text-xs text-slate-400 hover:text-white p-1 rounded-md cursor-pointer"
+                className="text-xs text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white p-1 rounded-md cursor-pointer"
               >
                 ✕
               </button>

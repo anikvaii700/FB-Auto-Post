@@ -105,9 +105,9 @@ export const DashboardView: React.FC<Props> = ({
             <button
               onClick={onGenerateQuick}
               disabled={isActionLoading}
-              className="px-3.5 py-2 text-xs font-semibold rounded-xl bg-slate-900 hover:bg-slate-800 text-white dark:bg-slate-800 dark:hover:bg-slate-700 transition-colors flex items-center gap-1.5 cursor-pointer shadow-xs"
+              className="px-3.5 py-2 text-xs font-semibold rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white transition-all flex items-center gap-1.5 cursor-pointer shadow-xs"
             >
-              <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+              <Sparkles className="w-3.5 h-3.5 text-amber-300" />
               <span>{t.generateNow}</span>
             </button>
 
@@ -250,19 +250,19 @@ export const DashboardView: React.FC<Props> = ({
       {/* 2. Key Metrics Strip (Tabular Figures) */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
         {/* Total Generated */}
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 flex flex-col justify-between shadow-xs">
-          <span className="text-xs font-medium text-slate-500 dark:text-slate-400">{t.totalGenerated}</span>
+        <div className="bg-white/90 dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 rounded-2xl p-4 flex flex-col justify-between shadow-xs hover:border-indigo-300 transition-colors">
+          <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">{t.totalGenerated}</span>
           <div className="flex items-baseline justify-between mt-2">
-            <span className="text-2xl font-bold font-mono tabular-nums text-slate-900 dark:text-white">
+            <span className="text-2xl font-bold font-mono tabular-nums text-slate-800 dark:text-white">
               {metrics?.totalGenerated ?? 0}
             </span>
-            <FileText className="w-4 h-4 text-slate-400" />
+            <FileText className="w-4 h-4 text-indigo-400" />
           </div>
         </div>
 
         {/* Total Published */}
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 flex flex-col justify-between shadow-xs">
-          <span className="text-xs font-medium text-slate-500 dark:text-slate-400">{t.totalPublished}</span>
+        <div className="bg-emerald-50/50 dark:bg-slate-900 border border-emerald-200/70 dark:border-slate-800 rounded-2xl p-4 flex flex-col justify-between shadow-xs hover:border-emerald-400 transition-colors">
+          <span className="text-xs font-semibold text-emerald-700 dark:text-slate-400">{t.totalPublished}</span>
           <div className="flex items-baseline justify-between mt-2">
             <span className="text-2xl font-bold font-mono tabular-nums text-emerald-600 dark:text-emerald-400">
               {metrics?.totalPublished ?? 0}
@@ -272,8 +272,8 @@ export const DashboardView: React.FC<Props> = ({
         </div>
 
         {/* Scheduled in Queue */}
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 flex flex-col justify-between shadow-xs">
-          <span className="text-xs font-medium text-slate-500 dark:text-slate-400">{t.scheduled}</span>
+        <div className="bg-blue-50/50 dark:bg-slate-900 border border-blue-200/70 dark:border-slate-800 rounded-2xl p-4 flex flex-col justify-between shadow-xs hover:border-blue-400 transition-colors">
+          <span className="text-xs font-semibold text-blue-700 dark:text-slate-400">{t.scheduled}</span>
           <div className="flex items-baseline justify-between mt-2">
             <span className="text-2xl font-bold font-mono tabular-nums text-blue-600 dark:text-blue-400">
               {metrics?.scheduledCount ?? 0}
@@ -283,8 +283,8 @@ export const DashboardView: React.FC<Props> = ({
         </div>
 
         {/* Today's Count */}
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 flex flex-col justify-between shadow-xs">
-          <span className="text-xs font-medium text-slate-500 dark:text-slate-400">{t.todayPublished}</span>
+        <div className="bg-purple-50/50 dark:bg-slate-900 border border-purple-200/70 dark:border-slate-800 rounded-2xl p-4 flex flex-col justify-between shadow-xs hover:border-purple-400 transition-colors">
+          <span className="text-xs font-semibold text-purple-700 dark:text-slate-400">{t.todayPublished}</span>
           <div className="flex items-baseline justify-between mt-2">
             <span className="text-2xl font-bold font-mono tabular-nums text-purple-600 dark:text-purple-400">
               {metrics?.todayPublishedCount ?? 0}
@@ -294,8 +294,8 @@ export const DashboardView: React.FC<Props> = ({
         </div>
 
         {/* Drafts */}
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 flex flex-col justify-between shadow-xs">
-          <span className="text-xs font-medium text-slate-500 dark:text-slate-400">{t.drafts}</span>
+        <div className="bg-amber-50/50 dark:bg-slate-900 border border-amber-200/70 dark:border-slate-800 rounded-2xl p-4 flex flex-col justify-between shadow-xs hover:border-amber-400 transition-colors">
+          <span className="text-xs font-semibold text-amber-700 dark:text-slate-400">{t.drafts}</span>
           <div className="flex items-baseline justify-between mt-2">
             <span className="text-2xl font-bold font-mono tabular-nums text-amber-600 dark:text-amber-400">
               {metrics?.draftCount ?? 0}
@@ -305,8 +305,8 @@ export const DashboardView: React.FC<Props> = ({
         </div>
 
         {/* Failed */}
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 flex flex-col justify-between shadow-xs">
-          <span className="text-xs font-medium text-slate-500 dark:text-slate-400">{t.failed}</span>
+        <div className="bg-rose-50/50 dark:bg-slate-900 border border-rose-200/70 dark:border-slate-800 rounded-2xl p-4 flex flex-col justify-between shadow-xs hover:border-rose-400 transition-colors">
+          <span className="text-xs font-semibold text-rose-700 dark:text-slate-400">{t.failed}</span>
           <div className="flex items-baseline justify-between mt-2">
             <span className="text-2xl font-bold font-mono tabular-nums text-rose-600 dark:text-rose-400">
               {metrics?.failedCount ?? 0}

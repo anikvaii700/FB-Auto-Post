@@ -9,43 +9,77 @@
   
   html, body {
     font-family: var(--font-sans);
-    background-color: #080c1e;
-    background-image: url('/assets/aistudio/image_0add04d7.png');
+    background-color: #f8fafc;
+    background-image: 
+      radial-gradient(circle at 10% 15%, rgba(224, 231, 255, 0.5) 0%, transparent 40%),
+      radial-gradient(circle at 90% 10%, rgba(254, 226, 226, 0.45) 0%, transparent 35%),
+      radial-gradient(circle at 50% 85%, rgba(209, 250, 229, 0.45) 0%, transparent 45%),
+      radial-gradient(circle at 85% 90%, rgba(254, 243, 199, 0.4) 0%, transparent 40%),
+      linear-gradient(135deg, #f8fafc 0%, #f1f5f9 50%, #f8fafc 100%);
     background-attachment: fixed;
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    @apply antialiased text-slate-100 min-h-screen;
+    @apply antialiased text-slate-800 min-h-screen;
   }
 
-  /* When dark class is active, maintain rich backdrop */
+  /* When dark class is explicitly toggled, maintain rich balanced dark palette */
   .dark html, .dark body {
-    background-color: #080c1e;
-    background-image: url('/assets/aistudio/image_0add04d7.png');
-    background-attachment: fixed;
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
+    background-color: #0f172a;
+    background-image: 
+      radial-gradient(circle at 15% 15%, rgba(30, 41, 59, 0.8) 0%, transparent 45%),
+      radial-gradient(circle at 85% 85%, rgba(15, 23, 42, 0.9) 0%, transparent 50%),
+      linear-gradient(135deg, #0f172a 0%, #090d16 100%);
     @apply text-slate-100;
   }
 }
 
 /* Glassmorphism utility for modern card backdrops */
 .glass-panel {
-  background: rgba(13, 19, 43, 0.78);
+  background: rgba(255, 255, 255, 0.88);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(226, 232, 240, 0.85);
+  box-shadow: 0 4px 20px -2px rgba(99, 102, 241, 0.05), 0 2px 6px -1px rgba(15, 23, 42, 0.03);
+}
+
+.dark .glass-panel {
+  background: rgba(30, 41, 59, 0.75);
   border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.3);
 }
 
 .glass-header {
-  background: rgba(8, 12, 30, 0.88);
+  background: rgba(255, 255, 255, 0.92);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(226, 232, 240, 0.85);
+}
+
+.dark .glass-header {
+  background: rgba(15, 23, 42, 0.88);
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-/* Custom scrollbar styling */
+/* Ambient light canvas helper */
+.light-theme-canvas {
+  background-color: #f8fafc;
+  background-image: 
+    radial-gradient(circle at 10% 15%, rgba(224, 231, 255, 0.5) 0%, transparent 40%),
+    radial-gradient(circle at 90% 10%, rgba(254, 226, 226, 0.45) 0%, transparent 35%),
+    radial-gradient(circle at 50% 85%, rgba(209, 250, 229, 0.45) 0%, transparent 45%),
+    radial-gradient(circle at 85% 90%, rgba(254, 243, 199, 0.4) 0%, transparent 40%),
+    linear-gradient(135deg, #f8fafc 0%, #f1f5f9 50%, #f8fafc 100%);
+  background-attachment: fixed;
+  background-size: cover;
+}
+
+.dark .light-theme-canvas {
+  background-color: #0f172a;
+  background-image: none;
+}
+
+/* Custom scrollbar styling with friendly soft emerald tint */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -54,9 +88,9 @@
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(192, 38, 211, 0.35);
+  background: rgba(16, 185, 129, 0.35);
   border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(217, 70, 239, 0.6);
+  background: rgba(16, 185, 129, 0.6);
 }

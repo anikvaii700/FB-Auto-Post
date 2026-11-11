@@ -233,9 +233,9 @@ export const QueueView: React.FC<Props> = ({
                   {post.status !== 'published' && (
                     <button
                       onClick={() => onPublishNow(post.id)}
-                      className="px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-900 hover:bg-slate-800 dark:bg-slate-800 dark:hover:bg-slate-700 text-white flex items-center gap-1 cursor-pointer shadow-xs"
+                      className="px-3 py-1.5 text-xs font-semibold rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white flex items-center gap-1 cursor-pointer shadow-xs"
                     >
-                      <Send className="w-3.5 h-3.5 text-emerald-400" />
+                      <Send className="w-3.5 h-3.5 text-blue-200" />
                       <span>{lang === 'bn' ? 'এখনই প্রকাশ করুন' : 'Publish Now'}</span>
                     </button>
                   )}

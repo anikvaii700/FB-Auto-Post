@@ -27,7 +27,7 @@ export const Header: React.FC<Props> = ({
   const isMeta = metrics?.isMetaConnected ?? false;
 
   return (
-    <header className="sticky top-0 z-30 h-16 w-full border-b border-slate-200 dark:border-white/10 bg-white/95 dark:bg-[#080c1e]/85 backdrop-blur-md px-4 sm:px-6 flex items-center justify-between gap-4 md:gap-8 transition-colors">
+    <header className="sticky top-0 z-30 h-16 w-full border-b border-slate-200/90 dark:border-slate-800 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md px-4 sm:px-6 flex items-center justify-between gap-4 md:gap-8 transition-colors shadow-xs">
       {/* Zone 1: Brand Wordmark */}
       <div className="flex items-center gap-3 shrink-0">
         <button
@@ -58,7 +58,7 @@ export const Header: React.FC<Props> = ({
       {/* Zone 2: Status Strip */}
       <div className="hidden lg:flex items-center gap-4 text-xs">
         {/* Automation Status */}
-        <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700">
+        <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-emerald-50/70 dark:bg-slate-800/80 border border-emerald-200/70 dark:border-slate-700">
           <Radio className={`w-3.5 h-3.5 ${isAuto ? 'text-emerald-500 animate-pulse' : 'text-slate-400'}`} />
           <span className="text-slate-700 dark:text-slate-300 font-medium">
             {isAuto
@@ -67,7 +67,7 @@ export const Header: React.FC<Props> = ({
           </span>
           <button
             onClick={() => onToggleAutomation(isAuto ? 'pause' : 'start')}
-            className="ml-1 text-[11px] underline text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 cursor-pointer"
+            className="ml-1 text-[11px] underline text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 cursor-pointer font-medium"
           >
             {isAuto
               ? lang === 'bn' ? 'সাময়িক বন্ধ' : 'Pause'
@@ -76,7 +76,7 @@ export const Header: React.FC<Props> = ({
         </div>
 
         {/* Facebook Connection Status */}
-        <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700">
+        <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-blue-50/70 dark:bg-slate-800/80 border border-blue-200/70 dark:border-slate-700">
           <span className="font-semibold text-blue-600 dark:text-blue-400">Meta</span>
           <span className="text-slate-700 dark:text-slate-300">
             {isMeta

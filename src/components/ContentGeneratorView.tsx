@@ -453,7 +453,7 @@ export const ContentGeneratorView: React.FC<Props> = ({
                   <button
                     onClick={handleRegenerate}
                     disabled={regenerating}
-                    className="px-3 py-1.5 bg-slate-900 hover:bg-slate-800 dark:bg-slate-700 dark:hover:bg-slate-600 text-white font-medium text-xs rounded-lg flex items-center gap-1 cursor-pointer shrink-0"
+                    className="px-3 py-1.5 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-semibold text-xs rounded-lg flex items-center gap-1 cursor-pointer shrink-0 shadow-xs"
                   >
                     <RotateCcw className={`w-3.5 h-3.5 ${regenerating ? 'animate-spin' : ''}`} />
                     <span>{lang === 'bn' ? 'পুনরায় লিখুন' : 'Refine'}</span>

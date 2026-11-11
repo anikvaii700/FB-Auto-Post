@@ -36,8 +36,8 @@ export const AdminLockModal: React.FC<Props> = ({ isOpen, onSuccess, lang }) => 
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-sm p-4">
-      <div className="w-full max-w-md bg-white dark:bg-[#0c122c]/90 border border-slate-200 dark:border-white/10 backdrop-blur-xl rounded-2xl shadow-2xl p-6 sm:p-8 transition-all">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/35 backdrop-blur-sm p-4">
+      <div className="w-full max-w-md bg-white/95 dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 backdrop-blur-xl rounded-2xl shadow-2xl p-6 sm:p-8 transition-all">
         <div className="flex flex-col items-center text-center">
           <div className="w-14 h-14 rounded-2xl bg-emerald-500/10 dark:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 flex items-center justify-center mb-4">
             <ShieldCheck className="w-8 h-8" />
